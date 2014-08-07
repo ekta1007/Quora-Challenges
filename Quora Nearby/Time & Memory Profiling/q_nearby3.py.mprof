@@ -1,0 +1,80 @@
+[0, 1]
+[5, 2, 1, 0]
+Filename: q_nearby3.py
+
+Line #    Mem usage    Increment   Line Contents
+================================================
+    76    8.441 MiB    0.000 MiB   @profile
+    77                             def MinDistanceCandidates(T_matrix,Q_matrix,N_matrix):
+    78    8.441 MiB    0.000 MiB       query_dict,topic_dict=collections.defaultdict(dict),collections.defaultdict(dict)#collections.defaultdict(lambda : collections.defaultdict(dict)) # dict of a dict in Python#collections.defaultdict(lambda : collections.defaultdict(dict))
+    79    8.441 MiB    0.000 MiB       dict_lat_long_q, dict_lat_long_t={},{}#collections.defaultdict(dict)
+    80    8.469 MiB    0.027 MiB       for row in N_matrix :# Force to read the 'q' the row 1st, can have multiple 'q' rows, need to build an abstraction for this
+    81    8.469 MiB    0.000 MiB           for topic_IdRows in T_matrix : 
+    82                                         """ store all the lat-long seeked, for both 'q' & 't' queries - contains (lat, long) as key & rows_needed as value"""
+    83    8.469 MiB    0.000 MiB               topic_dict[(row[-2],row[-1])][topic_IdRows[0]]=math.sqrt(math.pow((topic_IdRows[-2]-row[-2]),2)+math.pow((topic_IdRows[-1]-row[-1]),2))
+    84    8.469 MiB    0.000 MiB           if row.__contains__('q') :
+    85    8.469 MiB    0.000 MiB               dict_lat_long_q[(row[-2],row[-1])]=row[1] # storing the needed rows in another dict for quick reference
+    86    8.469 MiB    0.000 MiB               for row_InQmatrix in Q_matrix: # for each question in Q_matrix , write only min dist for all topics associated with that question
+    87    8.469 MiB    0.000 MiB                   for item in row_InQmatrix[2:]:
+    88    8.469 MiB    0.000 MiB                       if query_dict[(row[-2],row[-1])].has_key(row_InQmatrix[0]) and topic_dict[(row[-2],row[-1])][item]<query_dict[(row[-2],row[-1])][row_InQmatrix[0]]:
+    89    8.469 MiB    0.000 MiB                           query_dict[(row[-2],row[-1])][row_InQmatrix[0]] = topic_dict[(row[-2],row[-1])][item]
+    90                                                 else :
+    91    8.469 MiB    0.000 MiB                           query_dict[(row[-2],row[-1])][row_InQmatrix[0]] = topic_dict[(row[-2],row[-1])][item]
+    92    8.469 MiB    0.000 MiB           elif row.__contains__('t') :
+    93    8.469 MiB    0.000 MiB               dict_lat_long_t[(row[-2],row[-1])]=row[1]            
+    94                                 # keeping this, since I "ate" one loop, will see if I can discard this all-together
+    95                                 """
+    96                                 for row in N_matrix :
+    97                                     if row.__contains__('q') :
+    98                                         for row_InQmatrix in Q_matrix: # for each question in Q_matrix , write only min dist for all topics associated with that question
+    99                                             for item in row_InQmatrix[2:]:
+   100                                                 if query_dict[(row[-2],row[-1])].has_key(row_InQmatrix[0]) and topic_dict[(row[-2],row[-1])][item]<query_dict[(row[-2],row[-1])][row_InQmatrix[0]]:
+   101                                                     query_dict[(row[-2],row[-1])][row_InQmatrix[0]] = topic_dict[(row[-2],row[-1])][item]
+   102                                                 else :
+   103                                                     query_dict[(row[-2],row[-1])][row_InQmatrix[0]] = topic_dict[(row[-2],row[-1])][item]# fetch the dist for the corresponding topic id for that lat-long
+   104                                 """
+   105                                 # Now just return the q & t for lat-long queried
+   106    8.477 MiB    0.008 MiB       for row in N_matrix :
+   107    8.477 MiB    0.000 MiB           if query_dict.has_key((row[-2],row[-1])):
+   108    8.477 MiB    0.000 MiB               print [item[0] for item in sorted(query_dict[(row[-2],row[-1])].items() , key=lambda x: (x[1],-x[0]))][0:dict_lat_long_q[(row[-2],row[-1])]]
+   109    8.469 MiB   -0.008 MiB           elif topic_dict.has_key((row[-2],row[-1])):
+   110    8.477 MiB    0.008 MiB               print [item[0] for item in sorted(topic_dict[(row[-2],row[-1])].items() , key=lambda x: (x[1],-x[0]))][0:dict_lat_long_t[(row[-2],row[-1])]]
+
+
+Filename: q_nearby3.py
+
+Line #    Mem usage    Increment   Line Contents
+================================================
+    60    8.438 MiB   -0.004 MiB   @profile
+    61                             def ReadInputIntoMatrices(filehandle):
+    62    8.441 MiB    0.004 MiB       file_open =open(filehandle, 'r')
+    63                                 #N_matrix=[]
+    64    8.441 MiB    0.000 MiB       with file_open as f:
+    65    8.441 MiB    0.000 MiB           T,Q,N = map(int, next(f).split())
+    66    8.441 MiB    0.000 MiB           T_matrix=[transform_T(next(f).split()) for i in xrange(T)]
+    67                                     #T_matrix=[map(ast.literal_eval,next(f).split()) for i in xrange(T)]
+    68    8.441 MiB    0.000 MiB           Q_matrix=[map(int,next(f).split()) for i in xrange(Q)] # I know Q will never have floats/strings, else could use ast.literal_eval
+    69    8.441 MiB    0.000 MiB           N_matrix=[transform_N(next(f).split()) for i in xrange(N)]
+    70                                     #N_matrix_tmp=[next(f).split() for i in xrange(N)]
+    71                                 #for rows in N_matrix_tmp:  # other methods did not work very well for handling the 1st string, so using ast.literal_eval on all items except the 1st item (which is a string)
+    72                                 #   N_matrix.append([rows[0],ast.literal_eval(rows[1]),ast.literal_eval(rows[2]),ast.literal_eval(rows[3])])
+    73    8.441 MiB    0.000 MiB       return T_matrix,Q_matrix,N_matrix
+
+
+Filename: q_nearby3.py
+
+Line #    Mem usage    Increment   Line Contents
+================================================
+    52    8.441 MiB    0.000 MiB   @profile
+    53                             def transform_N(element): #element is a list
+    54    8.441 MiB    0.000 MiB       return element[0], int(element[1]),float(element[2]),float(element[3])
+
+
+Filename: q_nearby3.py
+
+Line #    Mem usage    Increment   Line Contents
+================================================
+    49    8.441 MiB    0.000 MiB   @profile
+    50                             def transform_T(element): #element is a list
+    51    8.441 MiB    0.000 MiB       return int(element[0]), float(element[1]),float(element[2])
+
