@@ -6,3 +6,7 @@ http://stackoverflow.com/questions/1833252/java-stanford-nlp-part-of-speech-labe
 http://www.computing.dcu.ie/~acahill/tagset.html
 http://www.comp.leeds.ac.uk/amalgam/tagsets/upenn.html
 http://danielmclaren.com/2007/05/11/getting-started-with-opennlp-natural-language-processing
+
+Post this classify text - 
+https://github.com/yassersouri/classify-text
+http://pydoc.net/Python/SimpleCV/1.2/SimpleCV.MachineLearning.KNNClassifier/
