@@ -5,3 +5,4 @@ POS tagger - references -:
 http://stackoverflow.com/questions/1833252/java-stanford-nlp-part-of-speech-labels/1833718#1833718
 http://www.computing.dcu.ie/~acahill/tagset.html
 http://www.comp.leeds.ac.uk/amalgam/tagsets/upenn.html
+http://danielmclaren.com/2007/05/11/getting-started-with-opennlp-natural-language-processing
