@@ -1,4 +1,5 @@
 http://www.nltk.org/book/ch05.html
 http://nlp.stanford.edu/software/tagger.shtml
 http://blog.dpdearing.com/2011/06/part-of-speech-pos-tagging-with-opennlp-1-5-0/
-
+POS tagger - references -:
+http://stackoverflow.com/questions/1833252/java-stanford-nlp-part-of-speech-labels/1833718#1833718
